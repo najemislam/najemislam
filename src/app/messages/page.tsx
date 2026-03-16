@@ -1,15 +1,12 @@
 'use client';
 
-import { BottomNav } from '@/components/BottomNav';
-import { useScrollDirection } from '@/hooks/use-scroll-direction';
-import { MessageCircle, ArrowLeft, Send, MoreVertical, Trash2, UserPlus, Home, Sun, Moon } from 'lucide-react';
+import { MessageCircle, ArrowLeft, Send, MoreVertical, Trash2, UserPlus, Home } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import Link from 'next/link';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from 'next-themes';
 
 const SUPABASE_STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/object/public';
 
@@ -52,9 +49,6 @@ interface Message {
 }
 
 export default function MessagesPage() {
-  const isHeaderVisible = useScrollDirection();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -79,12 +73,6 @@ export default function MessagesPage() {
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Force Light Mode removed - making it dynamic
-  
   // Get current user ID and profile from session
   useEffect(() => {
     const getSession = async () => {
@@ -352,47 +340,14 @@ export default function MessagesPage() {
         {!selectedConversation ? (
           <>
             {/* Header for Chat List - 64px (approx 64dp) */}
-                <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-4 bg-background border-b border-border">
+                <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 bg-background border-b border-border">
                     <h1 className="text-xl font-bold font-[family-name:var(--font-syne)]">Chats</h1>
+                    <Link href="/home" className="p-2 text-foreground hover:bg-accent rounded-full transition-colors">
+                      <Home size={24} strokeWidth={1.5} />
+                    </Link>
                 </header>
 
-            {/* Tab Navigation - Pill buttons below header */}
-            <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm px-4 py-4">
-              <div className="flex items-center gap-2 w-full">
-                <button
-                  onClick={() => setActiveTab('inbox')}
-                  className={`flex-1 py-3 rounded-full text-base font-bold transition-all ${
-                    activeTab === 'inbox'
-                      ? 'bg-foreground text-background shadow-md'
-                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                  }`}
-                >
-                  Inbox
-                </button>
-                <button
-                  onClick={() => setActiveTab('request')}
-                  className={`flex-1 py-3 rounded-full text-base font-bold transition-all ${
-                    activeTab === 'request'
-                      ? 'bg-foreground text-background shadow-md'
-                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                  }`}
-                >
-                  Requests
-                </button>
-                <button
-                  onClick={() => setActiveTab('suggestions')}
-                  className={`flex-1 py-3 rounded-full text-base font-bold transition-all ${
-                    activeTab === 'suggestions'
-                      ? 'bg-foreground text-background shadow-md'
-                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                  }`}
-                >
-                  Suggestions
-                </button>
-              </div>
-            </div>
-
-            <main className="max-w-xl mx-auto pt-36 pb-24 px-4">
+            <main className="max-w-xl mx-auto pt-20 pb-28 px-4">
               {loading ? (
                 <Loader />
               ) : activeTab === 'suggestions' ? (
@@ -492,7 +447,42 @@ export default function MessagesPage() {
                 </div>
                 )}
                 </main>
-                <BottomNav />
+
+            {/* Bottom Tab Navigation - Pill buttons */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3">
+              <div className="flex items-center gap-2 w-full max-w-xl mx-auto">
+                <button
+                  onClick={() => setActiveTab('inbox')}
+                  className={`flex-1 py-3 rounded-full text-base font-bold transition-all ${
+                    activeTab === 'inbox'
+                      ? 'bg-foreground text-background shadow-md'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                  }`}
+                >
+                  Inbox
+                </button>
+                <button
+                  onClick={() => setActiveTab('request')}
+                  className={`flex-1 py-3 rounded-full text-base font-bold transition-all ${
+                    activeTab === 'request'
+                      ? 'bg-foreground text-background shadow-md'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                  }`}
+                >
+                  Requests
+                </button>
+                <button
+                  onClick={() => setActiveTab('suggestions')}
+                  className={`flex-1 py-3 rounded-full text-base font-bold transition-all ${
+                    activeTab === 'suggestions'
+                      ? 'bg-foreground text-background shadow-md'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                  }`}
+                >
+                  Suggestions
+                </button>
+              </div>
+            </div>
               </>
           ) : (
         /* Chat Detail View */
