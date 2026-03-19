@@ -142,7 +142,11 @@ export default function PostDetailPage() {
             id={post.id}
             user_id={post.user_id}
             post_number={post.post_number}
-            user={post.user || { id: '', full_name: '', username: '', avatar_url: null }}
+            user={{
+              full_name: post.user?.full_name || 'Unknown User',
+              username: post.user?.username || 'unknown',
+              avatar_url: post.user?.avatar_url || '',
+            }}
             content={post.content}
             media_url={post.media_url}
             media_type={post.media_type as 'image' | 'video' | null}
