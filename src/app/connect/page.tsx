@@ -189,7 +189,7 @@ export default function ConnectPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/[0.08] transition-transform duration-300">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl transition-transform duration-300">
         <div className="max-w-xl mx-auto px-4 h-16 flex items-center gap-4">
           <span className="font-bold text-[22px] tracking-tight font-[family-name:var(--font-syne)] flex-shrink-0">
             Search
