@@ -71,7 +71,7 @@ export default function ChangePasswordPage() {
 
   return (
       <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black">
-        <header className="fixed top-0 left-0 right-0 z-50 px-4 h-16 flex items-center bg-transparent">
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 h-16 flex items-center bg-transparent border-b-0">
           <button onClick={() => router.back()} className="p-2 -ml-2 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>

@@ -329,7 +329,7 @@ export default function UserProfilePage() {
             </p>
           )}
 
-          <div className="flex mt-6 border-b border-black/10 dark:border-white/10">
+          <div className="flex mt-6">
             <button
               onClick={() => setActiveTab('posts')}
               className={`flex-1 py-3 text-sm font-bold transition-colors relative ${
