@@ -286,8 +286,11 @@ export function PostCard({
 
   useEffect(() => {
     if (showComments && commentInputRef.current) {
-      // Focus when comments open to trigger keyboard on mobile
-      commentInputRef.current.focus();
+      // Delay focus slightly to allow animation to complete
+      const timer = setTimeout(() => {
+        commentInputRef.current?.focus();
+      }, 350);
+      return () => clearTimeout(timer);
     }
   }, [showComments]);
 
@@ -826,6 +829,9 @@ export function PostCard({
         if (commentInputRef.current) {
           commentInputRef.current.style.height = 'auto';
         }
+
+        // Scroll to bottom only when the user themselves posts a comment
+        setTimeout(scrollToBottom, 100);
 
       if (user_id !== currentUserId) {
         await supabase
@@ -1698,10 +1704,10 @@ export function PostCard({
                             initial={{ y: '100%' }}
                             animate={{ y: 0 }}
                             exit={{ y: '100%' }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 300, mass: 0.5 }}
+                            transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
                             onClick={(e) => e.stopPropagation()}
-                              style={{ height: viewportHeight ? `${viewportHeight}px` : '100dvh' }}
-                                className="w-full max-w-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white flex flex-col relative rounded-t-[30px] overflow-hidden shadow-2xl pt-10"
+                              style={{ height: viewportHeight ? `${viewportHeight}px` : '90dvh' }}
+                                className="w-full max-w-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white flex flex-col relative rounded-t-[30px] overflow-hidden shadow-2xl pt-10 will-change-transform"
                               >
                                 {/* Pull Bar */}
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full cursor-grab active:cursor-grabbing" />
