@@ -47,6 +47,7 @@ interface CommentReply {
   content: string;
   created_at: string;
   user_id: string;
+  votes_count?: number;
   user: {
     full_name: string;
     avatar_url?: string | null;
