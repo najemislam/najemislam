@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, ArrowLeft, Send, MoreVertical, Trash2, UserPlus, Home, Settings2 } from 'lucide-react';
+import { MessageCircle, ArrowLeft, Send, MoreVertical, Trash2, UserPlus, Home, Settings2, RotateCcw } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import Link from 'next/link';
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -65,6 +65,9 @@ export default function MessagesPage() {
   const [showMenu, setShowMenu] = useState(false);
   const [messagedUsers, setMessagedUsers] = useState<Set<string>>(new Set());
   const [showFilters, setShowFilters] = useState(true);
+  const [visibleTimestamp, setVisibleTimestamp] = useState<string | null>(null);
+  const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
+  const [swipeStartX, setSwipeStartX] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -564,7 +567,7 @@ export default function MessagesPage() {
             </header>
 
           {/* Messages container */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col">
             {messagesLoading && messages.length === 0 ? (
               <Loader />
             ) : messages.length === 0 ? (
@@ -576,29 +579,60 @@ export default function MessagesPage() {
                 <p className="text-sm">Send a message to start the conversation with {getOtherUser(selectedConversation).full_name}</p>
               </div>
             ) : (
-              messages.map((msg, index) => {
-                const isMe = msg.sender_id === userId;
-                const showAvatar = index === 0 || messages[index - 1].sender_id !== msg.sender_id;
-                
-                return (
-                  <div key={msg.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                      <div
-                        className={`px-4 py-2.5 rounded-[20px] text-sm break-words ${
-                          isMe
-                            ? 'bg-primary text-primary-foreground rounded-tr-none'
-                            : 'bg-muted text-foreground rounded-tl-none'
-                        }`}
-                      >
-                        {msg.content}
+              <div className="space-y-0.5">
+                {messages.map((msg, index) => {
+                  const isMe = msg.sender_id === userId;
+                  const showAvatar = index === 0 || messages[index - 1].sender_id !== msg.sender_id;
+                  
+                  return (
+                    <div 
+                      key={msg.id} 
+                      className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}
+                      onTouchStart={(e) => setSwipeStartX(e.touches[0].clientX)}
+                      onTouchEnd={(e) => {
+                        const swipeEndX = e.changedTouches[0].clientX;
+                        const diff = swipeStartX - swipeEndX;
+                        if (!isMe && Math.abs(diff) > 50) {
+                          setReplyingToMessage(msg);
+                        }
+                      }}
+                    >
+                      <div className={`max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                        {/* Reply preview if this message is being replied to */}
+                        {replyingToMessage?.id === msg.id && (
+                          <div className="mb-1 px-3 py-1 bg-accent rounded text-xs text-muted-foreground flex items-center gap-2">
+                            <RotateCcw size={12} />
+                            <span>Replying to this</span>
+                          </div>
+                        )}
+                        <div
+                          onClick={() => setVisibleTimestamp(visibleTimestamp === msg.id ? null : msg.id)}
+                          className={`px-4 py-2.5 rounded-[20px] text-sm break-words cursor-pointer transition-all ${
+                            isMe
+                              ? 'bg-primary text-primary-foreground rounded-tr-none hover:opacity-90'
+                              : 'bg-muted text-foreground rounded-tl-none hover:opacity-90'
+                          }`}
+                        >
+                          {msg.content}
+                        </div>
+                        {/* Timestamp shown only when clicked */}
+                        <AnimatePresence>
+                          {visibleTimestamp === msg.id && (
+                            <motion.span 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="text-[10px] text-muted-foreground mt-0.5 px-1"
+                            >
+                              {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
                       </div>
-                      <span className="text-[10px] text-muted-foreground mt-1 px-1">
-                        {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+              </div>
             )}
             <div ref={messagesEndRef} className="h-4" />
           </div>
