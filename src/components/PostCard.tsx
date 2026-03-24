@@ -148,10 +148,10 @@ export function PostCard({
                 const newHeight = window.visualViewport.height;
                 setViewportHeight(newHeight);
                 
-                // Only scroll to bottom if keyboard actually opened (height decreased significantly)
-                if (newHeight < window.innerHeight * 0.8) {
-                  setTimeout(scrollToBottom, 150);
-                }
+                // Disabled: Do not scroll when keyboard opens
+                // if (newHeight < window.innerHeight * 0.8) {
+                //   setTimeout(scrollToBottom, 150);
+                // }
               }
             };
 
@@ -1782,10 +1782,10 @@ export function PostCard({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="fixed inset-0 bg-white dark:bg-black z-[60] flex items-end justify-center"
+                      className="fixed inset-0 bg-white dark:bg-black z-[60] flex items-end justify-center overflow-hidden"
                       onClick={() => { setShowComments(false); setReplyingTo(null); }}
-                    >
-                        <motion.div
+                      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+                    >                        <motion.div
                           drag="y"
                           dragConstraints={{ top: 0, bottom: 0 }}
                           dragElastic={0.05}
@@ -1800,8 +1800,8 @@ export function PostCard({
                             exit={{ y: '100%' }}
                             transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
                             onClick={(e) => e.stopPropagation()}
-                              style={{ height: viewportHeight ? `${viewportHeight}px` : '90dvh' }}
-                                className="w-full max-w-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white flex flex-col relative rounded-t-[30px] overflow-hidden shadow-2xl pt-10 will-change-transform"
+                              style={{ height: viewportHeight ? `${viewportHeight}px` : '90dvh', WebkitOverflowScrolling: 'touch' }}
+                                className="w-full max-w-xl bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white flex flex-col relative rounded-t-[30px] overflow-hidden shadow-2xl pt-10 will-change-transform" onTouchMove={(e) => e.preventDefault()}
                               >
                                 {/* Pull Bar */}
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full cursor-grab active:cursor-grabbing" />
