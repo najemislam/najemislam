@@ -11,14 +11,8 @@ import { RegisterForm } from "@/components/auth/register-form";
 import { ArrowLeft, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 
-const ShareIcon = ({ size = 24, color = "currentColor" }: { size?: number; color?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <circle cx="75" cy="20" r="12" stroke={color} strokeWidth="7" fill="none"/>
-    <circle cx="25" cy="50" r="12" stroke={color} strokeWidth="7" fill="none"/>
-    <circle cx="75" cy="80" r="12" stroke={color} strokeWidth="7" fill="none"/>
-    <line x1="36" y1="45" x2="64" y2="25" stroke={color} strokeWidth="7" strokeLinecap="round"/>
-    <line x1="36" y1="55" x2="64" y2="75" stroke={color} strokeWidth="7" strokeLinecap="round"/>
-  </svg>
+const ShareIcon = ({ size = 24 }: { size?: number }) => (
+  <img src="/icon.png" alt="Logo" width={size} height={size} className="object-contain" />
 );
 
 const Logo = ({ size = 'md', showText = true, orientation = 'vertical', className = '' }: { size?: 'sm' | 'md' | 'lg', showText?: boolean, orientation?: 'vertical' | 'horizontal', className?: string }) => {
@@ -44,8 +38,8 @@ const Logo = ({ size = 'md', showText = true, orientation = 'vertical', classNam
 
   return (
     <div className={`flex ${isVertical ? 'flex-col items-center' : 'flex-row items-center gap-3'} ${className}`}>
-      <div className={`${containerSizes[size]} flex items-center justify-center bg-foreground text-background ${isVertical && size !== 'sm' ? (size === 'lg' ? 'mb-6' : 'mb-4') : ''}`}>
-        <ShareIcon size={iconSizes[size]} />
+      <div className={`${containerSizes[size]} flex items-center justify-center ${isVertical && size !== 'sm' ? (size === 'lg' ? 'mb-6' : 'mb-4') : ''}`}>
+        <ShareIcon size={iconSizes[size] * 1.5} />
       </div>
       {showText && (
         <span className={`font-syne font-bold ${textSizes[size]} tracking-tight ${size === 'lg' ? 'tracking-tighter' : ''}`}>
