@@ -743,7 +743,7 @@ export function PostCard({
         }));
         toast.success('Vote removed');
       } else {
-        toast.error('Could not remove vote');
+        toast.error(error.message || 'Could not remove vote');
       }
     } else {
       // Add vote
@@ -780,7 +780,7 @@ export function PostCard({
         });
         toast.success('Ranked!');
       } else {
-        toast.error('Could not rank this comment');
+        toast.error(error.message || 'Could not rank this comment');
       }
     }
   };

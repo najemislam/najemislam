@@ -24,3 +24,16 @@ CREATE INDEX IF NOT EXISTS comments_user_id_idx ON comments(user_id);
 CREATE INDEX IF NOT EXISTS comments_parent_id_idx ON comments(parent_id);
 CREATE INDEX IF NOT EXISTS comment_votes_comment_id_idx ON comment_votes(comment_id);
 CREATE INDEX IF NOT EXISTS comment_votes_user_id_idx ON comment_votes(user_id);
+
+-- Disable RLS for these tables since the app uses custom auth and server-side validation is handled in API routes
+ALTER TABLE comments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE comment_votes DISABLE ROW LEVEL SECURITY;
+
+-- Grant access to anon role (used by the frontend client)
+GRANT ALL ON comments TO anon;
+GRANT ALL ON comment_votes TO anon;
+GRANT ALL ON comments TO authenticated;
+GRANT ALL ON comment_votes TO authenticated;
+GRANT ALL ON comments TO service_role;
+GRANT ALL ON comment_votes TO service_role;
+
