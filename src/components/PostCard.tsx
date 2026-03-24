@@ -134,9 +134,10 @@ export function PostCard({
         };
 
         useEffect(() => {
-          if (showComments) {
-            scrollToBottom();
-          }
+          // Disabled: Do not auto-scroll to bottom when opening comments
+          // if (showComments) {
+          //   scrollToBottom();
+          // }
         }, [comments, showComments]);
 
           useEffect(() => {
@@ -868,8 +869,8 @@ export function PostCard({
           commentInputRef.current.style.height = 'auto';
         }
 
-        // Scroll to bottom only when the user themselves posts a comment
-        setTimeout(scrollToBottom, 100);
+        // Disabled: Do not auto-scroll to bottom when user posts a comment
+        // setTimeout(scrollToBottom, 100);
 
       if (user_id !== currentUserId) {
         await supabase
