@@ -25,14 +25,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       `, { count: 'exact' })
       .eq('community_id', id);
 
-    // If approved_only, only show approved posts
-    // But show unapproved posts to the creator
-    if (approved_only && !user_id) {
-      query = query.eq('is_approved', true);
-    } else if (user_id) {
-      // Users can see approved posts or their own posts
-      query = query.or(`is_approved.eq.true,user_id.eq.${user_id}`);
-    }
+    // Show all posts for now as requested by user
+    // if (approved_only && !user_id) {
+    //   query = query.eq('is_approved', true);
+    // } else if (user_id) {
+    //   // Users can see approved posts or their own posts
+    //   query = query.or(`is_approved.eq.true,user_id.eq.${user_id}`);
+    // }
 
     const { data, error, count } = await query
       .order('created_at', { ascending: false })
@@ -89,7 +88,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         content,
         media_url,
         media_type,
-        is_approved: false,
+        is_approved: true,
       })
       .select()
       .single();

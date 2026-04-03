@@ -114,7 +114,7 @@ export default function HomePage() {
             if (communityIds.length === 0) {
               fetchedPosts = [];
             } else {
-              // Get approved posts from user's communities
+              // Get posts from user's communities
               const { data, error } = await supabase
                 .from('community_posts')
                 .select(`
@@ -125,7 +125,7 @@ export default function HomePage() {
                   comments:community_post_comments(count)
                 `)
                 .in('community_id', communityIds)
-                .eq('is_approved', true)
+                // .eq('is_approved', true) // Removed filter to show all posts as requested
                 .eq('user.is_deactivated', false)
                 .order('created_at', { ascending: false })
                 .range(currentOffset, currentOffset + PAGE_SIZE - 1);
@@ -197,6 +197,45 @@ export default function HomePage() {
           const { data, error } = await query;
           if (error) throw error;
           fetchedPosts = data || [];
+
+          // Also fetch community posts for explore and following modes
+          if (mode === 'explore' || mode === 'following') {
+            let communityQuery = supabase
+              .from('community_posts')
+              .select(`
+                *,
+                user:profiles!inner(id, full_name, username, avatar_url, is_deactivated),
+                community:communities(id, name),
+                likes:community_post_likes(count),
+                comments:community_post_comments(count)
+              `)
+              // .eq('is_approved', true) // Removed filter to show all posts as requested
+              .eq('user.is_deactivated', false);
+
+            if (mode === 'following' && user) {
+              // For following mode, only show community posts from people you follow
+              const { data: followsData } = await supabase
+                .from('follows')
+                .select('following_id')
+                .eq('follower_id', user.id);
+              const followingIds = (followsData || []).map(f => f.following_id);
+              communityQuery = communityQuery.in('user_id', [...followingIds, user.id]);
+            }
+
+            const { data: communityData } = await communityQuery
+              .order('created_at', { ascending: false })
+              .range(currentOffset, currentOffset + PAGE_SIZE - 1);
+
+            if (communityData) {
+              const formattedCommunityPosts = communityData.map(post => ({
+                ...post,
+                is_community_post: true,
+              }));
+              fetchedPosts = [...fetchedPosts, ...formattedCommunityPosts]
+                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                .slice(0, PAGE_SIZE);
+            }
+          }
         }
 
       if (isLoadMore) {
