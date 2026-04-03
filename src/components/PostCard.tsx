@@ -1136,7 +1136,7 @@ export function PostCard({
                     onClick={() => setShowCommentMenu(showCommentMenu === comment.id ? null : comment.id)}
                     className="p-1.5 text-zinc-400 hover:text-black dark:hover:text-white rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                   >
-                    <MoreVertical className="w-6 h-6" strokeWidth={1.5} />
+                    <MoreHorizontal className="w-6 h-6" strokeWidth={1.5} />
                   </button>
                   {showCommentMenu === comment.id && (
                     <div className="absolute right-0 bottom-full mb-1 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 rounded-xl shadow-xl z-20 overflow-hidden min-w-[140px]">
@@ -1263,7 +1263,7 @@ export function PostCard({
             onClick={() => setShowMenu(true)}
             className="p-2 -mr-2 text-zinc-500 hover:text-black dark:hover:text-white rounded-full transition-colors"
           >
-            <MoreVertical className="w-6 h-6" strokeWidth={1.5} />
+            <MoreHorizontal className="w-6 h-6" strokeWidth={1.5} />
           </button>
         </div>
 
