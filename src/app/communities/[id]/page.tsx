@@ -127,11 +127,15 @@ export default function CommunityDetailPage() {
       });
 
       if (res.ok) {
+        const { data: newPost } = await res.json();
         setPostContent('');
-        fetchPosts();
+        // Add the new post to the top of the list immediately
+        setPosts(prev => [newPost, ...prev]);
+        setPostCount(prev => prev + 1);
+        toast.success('Post created successfully!');
       } else {
         const error = await res.json();
-        alert(error.error || 'Failed to create post');
+        toast.error(error.error || 'Failed to create post');
       }
     } catch (error) {
       console.error('Error creating post:', error);

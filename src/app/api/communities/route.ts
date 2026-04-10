@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, description, category, avatar_url, creator_id, is_private } = await req.json();
+    const { name, username, description, category, avatar_url, cover_url, creator_id, is_private } = await req.json();
 
     if (!name || !creator_id) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -54,9 +54,11 @@ export async function POST(req: NextRequest) {
       .from('communities')
       .insert({
         name,
+        username,
         description,
         category,
         avatar_url,
+        cover_url,
         creator_id,
         is_private,
       })

@@ -86,11 +86,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         community_id: id,
         user_id,
         content,
-        media_url,
-        media_type,
+        media_url: media_url || null,
+        media_type: media_type || null,
         is_approved: true,
       })
-      .select()
+      .select(`
+        *,
+        user:profiles(id, full_name, username, avatar_url),
+        likes:community_post_likes(count),
+        comments:community_post_comments(count)
+      `)
       .single();
 
     if (error) throw error;
