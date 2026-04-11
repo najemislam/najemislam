@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { Heart, MessageCircle, Share2, MoreHorizontal, X, Send, Trash2, Clock, Reply, ChevronDown, ChevronUp, Bookmark, Copy, Download, Maximize2, Repeat, TrendingUp, CornerRightDown } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1484,7 +1484,7 @@ export function PostCard({
                     
                     {/* Hashtags as plain text */}
                     {content.match(/#\w+/g)?.map((tag, i) => (
-                      <React.Fragment key={i}>
+                      <Fragment key={i}>
                         <span>·</span>
                         <Link
                           href={`/search?q=%23${tag.slice(1)}`}
@@ -1493,7 +1493,7 @@ export function PostCard({
                         >
                           {tag}
                         </Link>
-                      </React.Fragment>
+                      </Fragment>
                     ))}
                   </div>
                 </div>
