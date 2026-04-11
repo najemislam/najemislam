@@ -1463,32 +1463,37 @@ export function PostCard({
                     <VerifiedBadge username={user?.username} className="w-4 h-4" />
                   </div>
                   
-                  {/* Pill buttons below name */}
-                  <div className="flex items-center gap-2 mt-0.5 overflow-x-auto no-scrollbar pb-1">
-                    <div className="flex-shrink-0 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-900 border border-black/[0.05] dark:border-white/[0.05] rounded-full">
-                      <span className="text-[12px] font-medium text-zinc-500 dark:text-zinc-400">@{user?.username || 'user'}</span>
-                    </div>
+                  {/* Text metadata below name */}
+                  <div className="flex items-center gap-1.5 mt-1 overflow-x-auto no-scrollbar pb-1 text-[12px] text-zinc-500 dark:text-zinc-400">
+                    <span>@{user?.username || 'user'}</span>
+                    <span>·</span>
+                    <span>{formatTimeAgo(created_at)}</span>
                     
                     {is_community_post && community && (
-                      <Link 
-                        href={`/communities/${community.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-shrink-0 px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
-                      >
-                        <span className="text-[12px] font-semibold text-blue-600 dark:text-blue-400">{community.name}</span>
-                      </Link>
+                      <>
+                        <span>·</span>
+                        <Link 
+                          href={`/communities/${community.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          {community.name}
+                        </Link>
+                      </>
                     )}
                     
-                    {/* Hashtags as pills */}
+                    {/* Hashtags as plain text */}
                     {content.match(/#\w+/g)?.map((tag, i) => (
-                      <Link
-                        key={i}
-                        href={`/search?q=%23${tag.slice(1)}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-shrink-0 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-900 border border-black/[0.05] dark:border-white/[0.05] rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                      >
-                        <span className="text-[12px] font-medium text-zinc-500 dark:text-zinc-400">{tag}</span>
-                      </Link>
+                      <React.Fragment key={i}>
+                        <span>·</span>
+                        <Link
+                          href={`/search?q=%23${tag.slice(1)}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-zinc-500 dark:text-zinc-400 hover:underline"
+                        >
+                          {tag}
+                        </Link>
+                      </React.Fragment>
                     ))}
                   </div>
                 </div>
