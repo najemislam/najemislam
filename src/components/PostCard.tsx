@@ -1520,7 +1520,7 @@ export function PostCard({
                     
                     {/* Hashtags as plain text */}
                     {content.match(/#\w+/g)?.map((tag, i) => (
-                      <React.Fragment key={i}>
+                      <div key={i} className="flex items-center gap-1.5">
                         <span>·</span>
                         <Link
                           href={`/search?q=%23${tag.slice(1)}`}
@@ -1529,7 +1529,7 @@ export function PostCard({
                         >
                           {tag}
                         </Link>
-                      </React.Fragment>
+                      </div>
                     ))}
                   </div>
                 </div>
