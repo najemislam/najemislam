@@ -7,6 +7,7 @@ import { PostCard } from '@/components/PostCard';
 import { BottomNav } from '@/components/BottomNav';
 import { ArrowLeft, ChevronLeft } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { PostSkeleton } from '@/components/PostSkeleton';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -85,8 +86,19 @@ export default function PostDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader />
+      <div className="min-h-screen bg-background">
+        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-800">
+          <div className="flex items-center justify-between p-4 max-w-2xl mx-auto">
+            <div className="flex items-center gap-2">
+              <ArrowLeft className="w-5 h-5 text-neutral-400" />
+              <span className="font-semibold text-neutral-400">Back</span>
+            </div>
+          </div>
+        </div>
+        <main className="max-w-2xl mx-auto py-4 px-4">
+          <PostSkeleton />
+        </main>
+        <BottomNav />
       </div>
     );
   }

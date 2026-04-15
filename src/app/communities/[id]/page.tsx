@@ -7,6 +7,8 @@ import CommunityPostCard from '@/components/CommunityPostCard';
 import { supabase } from '@/lib/supabase';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PostSkeleton } from '@/components/PostSkeleton';
 
 export default function CommunityDetailPage() {
   const router = useRouter();
@@ -206,8 +208,31 @@ export default function CommunityDetailPage() {
 
   if (!community) {
     return (
-      <div className="min-h-screen bg-background pb-28 flex items-center justify-center">
-        <div>Loading...</div>
+      <div className="min-h-screen bg-background pb-28 animate-pulse">
+        <header className="h-16 flex items-center px-4 bg-background border-b border-black/[0.05] dark:border-white/[0.05]">
+          <Skeleton className="h-6 w-32 bg-zinc-200 dark:bg-zinc-800" />
+        </header>
+        <main className="max-w-xl mx-auto">
+          <Skeleton className="w-full h-40 bg-zinc-100 dark:bg-zinc-900 mb-6" />
+          <div className="px-4 space-y-4">
+            <div className="flex items-center gap-4">
+              <Skeleton className="w-16 h-16 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-6 w-1/2 bg-zinc-200 dark:bg-zinc-800" />
+                <Skeleton className="h-4 w-1/4 bg-zinc-100 dark:bg-zinc-900" />
+              </div>
+            </div>
+            <div className="flex gap-6 py-4">
+              <Skeleton className="h-4 w-16 bg-zinc-100 dark:bg-zinc-900" />
+              <Skeleton className="h-4 w-16 bg-zinc-100 dark:bg-zinc-900" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full bg-zinc-100 dark:bg-zinc-900" />
+              <Skeleton className="h-4 w-3/4 bg-zinc-100 dark:bg-zinc-900" />
+            </div>
+          </div>
+        </main>
+        <BottomNav />
       </div>
     );
   }
@@ -326,7 +351,11 @@ export default function CommunityDetailPage() {
         {/* Posts Section */}
         <div className="px-4">
           {loading ? (
-            <p className="text-center text-muted-foreground py-8">Loading posts...</p>
+            <div className="space-y-4 py-4">
+              {[...Array(3)].map((_, i) => (
+                <PostSkeleton key={i} />
+              ))}
+            </div>
           ) : posts.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">No posts yet</p>
           ) : (

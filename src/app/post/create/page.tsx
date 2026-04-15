@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Image as ImageIcon, X } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { Skeleton } from '@/components/ui/skeleton';
+import { BottomNav } from '@/components/BottomNav';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -246,7 +248,25 @@ export default function CreatePostPage() {
   const isPostDisabled = posting || (!content.trim() && mediaFiles.length === 0);
 
   if (loading) {
-    return <Loader fullScreen />;
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="h-16 flex items-center justify-between px-4 bg-background border-b border-black/[0.05] dark:border-white/[0.05]">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+            <Skeleton className="h-4 w-24 bg-zinc-100 dark:bg-zinc-900" />
+          </div>
+          <Skeleton className="h-9 w-20 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+        </header>
+        <main className="max-w-xl mx-auto p-4 space-y-4">
+          <Skeleton className="h-32 w-full rounded-xl bg-zinc-100 dark:bg-zinc-900" />
+          <div className="flex gap-4">
+            <Skeleton className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900" />
+            <Skeleton className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900" />
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
   }
 
   return (

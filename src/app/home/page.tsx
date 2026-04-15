@@ -8,6 +8,7 @@ import { PostCard } from '@/components/PostCard';
 import { BottomNav } from '@/components/BottomNav';
 import { Share2, Search, Settings, Settings2, LogOut, X, MessageCircle, MessageSquare, Plus, Users, TrendingUp, Navigation, UserRoundPlus, UsersRound } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { PostSkeleton } from '@/components/PostSkeleton';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useGuestMode } from '@/context/GuestModeContext';
@@ -818,13 +819,15 @@ export default function HomePage() {
         </div>
 
         {loading && (
-          <div className="py-8">
-            <Loader />
+          <div className="flex flex-col">
+            {[...Array(5)].map((_, i) => (
+              <PostSkeleton key={`skeleton-${i}`} />
+            ))}
           </div>
         )}
 
         {!loading && loadingMore && (
-          <div className="py-8">
+          <div className="py-4">
             <Loader />
           </div>
         )}

@@ -24,6 +24,8 @@ import { supabase } from '@/lib/supabase';
 import { PostCard } from '@/components/PostCard';
 import CommunityCard from '@/components/CommunityCard';
 import { Loader } from '@/components/ui/loader';
+import { PostSkeleton } from '@/components/PostSkeleton';
+import { CommunitySkeleton } from '@/components/CommunitySkeleton';
 import { cn } from '@/lib/utils';
 import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { BottomNav } from '@/components/BottomNav';
@@ -270,9 +272,23 @@ function SearchContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="py-20"
+              className="space-y-4"
             >
-              <Loader />
+              {searchType === 'Communities' ? (
+                [...Array(6)].map((_, i) => <CommunitySkeleton key={i} />)
+              ) : searchType === 'Users' ? (
+                [...Array(8)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-4 p-3 animate-pulse">
+                    <div className="w-14 h-14 rounded-full bg-muted" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-32 bg-muted rounded" />
+                      <div className="h-3 w-20 bg-muted rounded" />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                [...Array(5)].map((_, i) => <PostSkeleton key={i} />)
+              )}
             </motion.div>
           ) : (
             <motion.div

@@ -8,6 +8,7 @@ import { useScrollDirection } from '@/hooks/use-scroll-direction';
 import { supabase } from '@/lib/supabase';
 import { Search, MessageCircle, X, Menu, Settings, LogOut, Share2 } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface UserCard {
   id: string;
@@ -270,7 +271,21 @@ export default function ConnectPage() {
 
       <main className="max-w-xl mx-auto px-4 py-4 pb-24">
         {loading || loadingSuggested ? (
-          <Loader />
+          <div className="space-y-6">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex flex-col gap-3 animate-pulse">
+                <Skeleton className="h-32 w-full rounded-2xl bg-zinc-100 dark:bg-zinc-900" />
+                <div className="flex items-center gap-3 px-2">
+                  <Skeleton className="w-14 h-14 rounded-full bg-zinc-200 dark:bg-zinc-800 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-1/3 bg-zinc-100 dark:bg-zinc-900" />
+                    <Skeleton className="h-3 w-1/4 bg-zinc-50 dark:bg-zinc-950" />
+                  </div>
+                  <Skeleton className="h-8 w-20 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : displayUsers.length > 0 ? (
           <div>
             <p className="text-xs text-zinc-500 uppercase tracking-wider mb-4 px-1">

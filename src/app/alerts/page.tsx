@@ -7,6 +7,7 @@ import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
 import { Heart, MessageCircle, UserPlus, Menu, X, Settings, LogOut, Share2 } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -228,7 +229,17 @@ export default function AlertsPage() {
 
       <main className="max-w-xl mx-auto pt-16 pb-20">
         {loading ? (
-          <Loader />
+          <div className="divide-y divide-black/5 dark:divide-white/5">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="flex items-start gap-4 p-4 animate-pulse">
+                <Skeleton className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-3/4 bg-zinc-100 dark:bg-zinc-900" />
+                  <Skeleton className="h-3 w-1/4 bg-zinc-50 dark:bg-zinc-950" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : alerts.length > 0 ? (
           <div className="divide-y divide-black/5 dark:divide-white/5">
             {alerts.map((alert) => (

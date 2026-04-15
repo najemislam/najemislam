@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SquarePlus } from 'lucide-react';
 import CommunityCard from '@/components/CommunityCard';
+import { CommunitySkeleton } from '@/components/CommunitySkeleton';
 import { supabase } from '@/lib/supabase';
 import { BottomNav } from '@/components/BottomNav';
 
@@ -102,8 +103,10 @@ export default function CommunitiesPage() {
       {/* Main Content */}
       <main className="max-w-xl mx-auto pt-20 px-4">
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading communities...</p>
+          <div className="space-y-4">
+            {[...Array(6)].map((_, i) => (
+              <CommunitySkeleton key={i} />
+            ))}
           </div>
         ) : communities.length === 0 ? (
           <div className="text-center py-12">

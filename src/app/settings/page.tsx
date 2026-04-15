@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { supabase } from '@/lib/supabase';
@@ -73,6 +74,23 @@ export default function SettingsPage() {
       router.push('/');
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="h-16 flex items-center px-4 bg-background">
+          <ArrowLeft size={24} strokeWidth={1.5} className="text-zinc-400" />
+          <span className="ml-2 font-bold text-lg text-zinc-400">Settings</span>
+        </header>
+        <main className="max-w-xl mx-auto p-4 space-y-3">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full rounded-2xl bg-zinc-100 dark:bg-zinc-900" />
+          ))}
+        </main>
+        <BottomNav />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black">

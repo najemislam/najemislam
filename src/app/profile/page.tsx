@@ -7,6 +7,7 @@ import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { BottomNav } from '@/components/BottomNav';
 import { Calendar, User, UserPen, Menu, X, Settings, LogOut, Share2, Globe, Lock, Eye, EyeOff, UserCircle, AtSign, Cake, Mars, Venus, Heart } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { ProfileSkeleton } from '@/components/ProfileSkeleton';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -218,7 +219,12 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return <Loader fullScreen />;
+    return (
+      <>
+        <ProfileSkeleton />
+        <BottomNav />
+      </>
+    );
   }
 
     return (

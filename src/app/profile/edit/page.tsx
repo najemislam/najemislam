@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Camera } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { ProfileSkeleton } from '@/components/ProfileSkeleton';
+import { BottomNav } from '@/components/BottomNav';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -177,7 +179,12 @@ export default function EditProfilePage() {
   };
 
   if (loading) {
-    return <Loader fullScreen />;
+    return (
+      <>
+        <ProfileSkeleton />
+        <BottomNav />
+      </>
+    );
   }
 
   return (
