@@ -103,6 +103,7 @@ export function PostCard({
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [liked, setLiked] = useState(false);
+  const [liking, setLiking] = useState(false);
   const [likesCount, setLikesCount] = useState(initialLikes);
   const [commentsCount, setCommentsCount] = useState(initialComments);
   const [repostsCount, setRepostsCount] = useState(initialReposts);
@@ -515,6 +516,9 @@ export function PostCard({
       return;
     }
 
+    if (liking) return;
+    setLiking(true);
+
     const wasLiked = liked;
     setLiked(!liked);
     setLikesCount(prev => wasLiked ? prev - 1 : prev + 1);
@@ -562,6 +566,8 @@ export function PostCard({
       setLiked(wasLiked);
       setLikesCount(prev => wasLiked ? prev + 1 : prev - 1);
       toast.error('Failed to update like');
+    } finally {
+      setLiking(false);
     }
   };
 
@@ -1887,7 +1893,7 @@ export function PostCard({
                                       disabled={liking}
                                       className="flex items-center gap-2 p-2 -ml-2 text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50"
                                     >
-                                      <Heart className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} strokeWidth={1.5} />
+                                      <Heart className={`w-6 h-6 ${liked ? 'fill-red-500 text-red-500' : ''}`} strokeWidth={1.5} />
                                     </button>
                                     <button 
                                       className="flex items-center gap-2 p-2 text-zinc-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
