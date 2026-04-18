@@ -3,15 +3,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function PostSkeleton() {
   return (
     <div className="p-4 border-b border-black/[0.05] dark:border-white/[0.05] animate-pulse">
-      <div className="flex items-start gap-3">
-        {/* Avatar Skeleton */}
+      <div className="flex items-start gap-3 mb-4">
+        {/* Avatar Skeleton - 40px */}
         <Skeleton className="w-10 h-10 rounded-full shrink-0 bg-zinc-200 dark:bg-zinc-800" />
         
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            {/* Name and Username Skeleton */}
-            <Skeleton className="h-4 w-24 bg-zinc-200 dark:bg-zinc-800" />
-            <Skeleton className="h-3 w-16 bg-zinc-100 dark:bg-zinc-900" />
+          {/* Header: Name, Badge, Username on same line */}
+          <div className="flex items-center gap-2 mb-4">
+            <Skeleton className="h-4 w-32 bg-zinc-200 dark:bg-zinc-800" />
+            <Skeleton className="h-4 w-4 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+            <Skeleton className="h-4 w-20 bg-zinc-100 dark:bg-zinc-900" />
           </div>
           
           {/* Content Lines Skeleton */}
