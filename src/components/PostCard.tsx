@@ -1506,38 +1506,6 @@ export function PostCard({
                     <VerifiedBadge username={user?.username} className="w-[16px] h-[16px]" />
                     <span className="text-[14px] text-zinc-500 dark:text-zinc-400 font-medium">@{user?.username || 'user'}</span>
                   </div>
-                  
-                  {/* Text metadata below name */}
-                  <div className="flex items-center gap-1.5 mt-0.5 overflow-x-auto no-scrollbar pb-1 text-[12px] text-zinc-500 dark:text-zinc-400">
-                    <span>{formatTime(created_at || new Date().toISOString())}</span>
-                    
-                    {is_community_post && community && (
-                      <>
-                        <span>·</span>
-                        <Link 
-                          href={`/communities/${community.id}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
-                        >
-                          {community.name}
-                        </Link>
-                      </>
-                    )}
-                    
-                    {/* Hashtags as plain text */}
-                    {content.match(/#\w+/g)?.map((tag, i) => (
-                      <div key={i} className="flex items-center gap-1.5">
-                        <span>·</span>
-                        <Link
-                          href={`/search?q=%23${tag.slice(1)}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-zinc-500 dark:text-zinc-400 hover:underline"
-                        >
-                          {tag}
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </Link>
               
