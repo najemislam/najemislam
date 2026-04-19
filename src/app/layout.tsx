@@ -11,8 +11,8 @@ import { GuestModeProvider } from "@/context/GuestModeContext";
 import { GuestBannerWrapper } from "@/components/GuestBannerWrapper";
 
 export const metadata: Metadata = {
-  title: "Sharable | Share anything with the world.",
-  description: "Got anything Sharable? Join the community and start sharing now.",
+  title: "Sharable",
+  description: "Share anything with the world.",
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.png",
