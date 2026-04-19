@@ -229,22 +229,14 @@ export default function ProfilePage() {
 
     return (
       <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black">
-        <header className={`fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl transition-transform duration-300 ${
-          isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
-        }`}>
-          <div className="max-w-xl mx-auto px-4 h-16 flex items-center justify-between">
-
-            <span className="font-bold text-[22px] tracking-tight font-[family-name:var(--font-syne)]">
-              Profile
-            </span>
+        <div className="fixed top-4 right-4 z-50">
           <button 
             onClick={() => setMenuOpen(true)}
-            className="p-2 -mr-2 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 bg-white/80 dark:bg-black/80 backdrop-blur-xl text-black dark:text-white border border-black/10 dark:border-white/10 rounded-full transition-colors shadow-sm"
           >
             <Menu size={24} strokeWidth={1.5} />
           </button>
         </div>
-      </header>
 
       {menuOpen && (
         <div className="fixed inset-0 z-[60]">
@@ -292,9 +284,9 @@ export default function ProfilePage() {
         </div>
       )}
 
-      <main className="max-w-xl mx-auto pt-16 pb-20">
+      <main className="max-w-xl mx-auto pb-20">
         <div className="relative">
-          <div className="w-full h-36 md:h-48 bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
+          <div className="w-full aspect-[16/9] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
             {coverSrc ? (
               <img
                 src={coverSrc}
