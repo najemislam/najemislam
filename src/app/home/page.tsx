@@ -12,6 +12,7 @@ import { PostSkeleton } from '@/components/PostSkeleton';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useGuestMode } from '@/context/GuestModeContext';
+import { useScrollDirection } from '@/hooks/use-scroll-direction';
 
 const PAGE_SIZE = 10;
 
@@ -745,18 +746,21 @@ export default function HomePage() {
         )}
       </AnimatePresence>
     
-      <header className="fixed top-0 left-0 right-0 h-16 z-50 px-4 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b-0">
+      <header className={`fixed top-0 left-0 right-0 h-16 z-50 px-4 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b-0 transition-transform duration-300 ${
+        useScrollDirection() ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="h-full flex items-center justify-between">
           <button 
             onClick={() => setLeftSidebarOpen(true)}
             className="p-2 text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
           >
-            <Settings2 size={24} strokeWidth={1.5} />
+            <Settings2 size={24} strokeWidth={1} />
           </button>
 
           <div className="flex-1 flex justify-center">
             <Share2 
-              size={28} 
+              size={24} 
+              strokeWidth={1}
               className="text-black dark:text-white cursor-pointer"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             />
@@ -772,7 +776,7 @@ export default function HomePage() {
             }}
             className="p-2 text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
           >
-            <MessageCircle size={24} strokeWidth={1.5} />
+            <MessageCircle size={24} strokeWidth={1} />
           </button>
         </div>
       </header>
