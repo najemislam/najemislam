@@ -322,11 +322,10 @@ export default function EditProfilePage() {
                   onChange={(e) => setGender(e.target.value)}
                   className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
                 >
-                <option value="">Select gender</option>
+                
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer_not_to_say">Prefer not to say</option>
+                
               </select>
             </div>
 
