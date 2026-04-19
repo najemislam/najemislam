@@ -5,10 +5,8 @@ export function ProfileSkeleton() {
   return (
     <div className="min-h-screen bg-white dark:bg-black animate-pulse pb-20">
       <div className="max-w-xl mx-auto">
-        {/* 16:9 Cover Skeleton */}
-        <div className="relative w-full aspect-[16/9]">
-          <Skeleton className="absolute inset-0 w-full h-full bg-zinc-100 dark:bg-zinc-900" />
-        </div>
+        {/* Cover Skeleton - h-48 (192px) */}
+        <Skeleton className="w-full h-48 bg-zinc-100 dark:bg-zinc-900" />
 
         <div className="px-4 -mt-10 relative z-10">
           <div className="flex justify-between items-end mb-4">

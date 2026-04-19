@@ -286,7 +286,7 @@ export default function ProfilePage() {
 
       <main className="max-w-xl mx-auto pb-20">
         <div className="relative">
-          <div className="w-full aspect-[16/9] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
+          <div className="w-full h-48 bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
             {coverSrc ? (
               <img
                 src={coverSrc}
