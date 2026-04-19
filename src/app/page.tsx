@@ -35,11 +35,13 @@ const Logo = ({ size = 'md', showText = true, orientation = 'vertical', classNam
 
   const isVertical = orientation === 'vertical';
   const isDark = theme === 'dark';
+  const bgColor = isDark ? 'bg-white' : 'bg-black';
+  const iconColor = isDark ? 'text-black' : 'text-white';
 
   return (
     <div className={`flex ${isVertical ? 'flex-col items-center' : 'flex-row items-center gap-3'} ${className}`}>
-      <div className={`${containerSizes[size]} flex items-center justify-center ${isVertical && size !== 'sm' ? (size === 'lg' ? 'mb-6' : 'mb-4') : ''}`}>
-        <Share2 size={iconSizes[size]} className={isDark ? 'text-white' : 'text-black'} strokeWidth={1.5} />
+      <div className={`${containerSizes[size]} ${bgColor} flex items-center justify-center ${isVertical && size !== 'sm' ? (size === 'lg' ? 'mb-6' : 'mb-4') : ''}`}>
+        <Share2 size={iconSizes[size]} className={iconColor} strokeWidth={1.5} />
       </div>
       {showText && (
         <span className={`font-syne font-bold ${textSizes[size]} tracking-tight ${size === 'lg' ? 'tracking-tighter' : ''}`}>
