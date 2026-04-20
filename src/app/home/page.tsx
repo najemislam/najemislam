@@ -135,17 +135,19 @@ export default function HomePage() {
                 .range(currentOffset, currentOffset + PAGE_SIZE - 1);
 
               if (error) throw error;
-              fetchedPosts = (data || []).map(post => ({
-                ...post,
-                id: post.id,
-                content: post.content,
-                media_url: post.media_url,
-                media_type: post.media_type,
-                user: post.user,
-                community: post.community,
-                created_at: post.created_at,
-                is_community_post: true,
-              }));
+	              fetchedPosts = (data || []).map(post => ({
+	                ...post,
+	                id: post.id,
+	                content: post.content,
+	                media_url: post.media_url,
+	                media_type: post.media_type,
+	                media_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
+	                media_types: post.media_types || (post.media_type ? [post.media_type] : []),
+	                user: post.user,
+	                community: post.community,
+	                created_at: post.created_at,
+	                is_community_post: true,
+	              }));
             }
           }
         } else if (mode === 'trending') {
@@ -160,14 +162,18 @@ export default function HomePage() {
         } else {
           let query = supabase
             .from('posts')
-            .select(`
-              *,
-              user:profiles!inner(full_name, avatar_url, username, is_deactivated),
-              original_post:reposted_id(
-                *,
-                user:profiles(full_name, avatar_url, username)
-              )
-            `)
+	            .select(`
+	              *,
+	              media_urls,
+	              media_types,
+	              user:profiles!inner(full_name, avatar_url, username, is_deactivated),
+	              original_post:reposted_id(
+	                *,
+	                media_urls,
+	                media_types,
+	                user:profiles(full_name, avatar_url, username)
+	              )
+	            `)
             .eq('user.is_deactivated', false);
 
           if (mode === 'following') {
@@ -231,10 +237,12 @@ export default function HomePage() {
               .range(currentOffset, currentOffset + PAGE_SIZE - 1);
 
             if (communityData) {
-              const formattedCommunityPosts = communityData.map(post => ({
-                ...post,
-                is_community_post: true,
-              }));
+	              const formattedCommunityPosts = communityData.map(post => ({
+	                ...post,
+	                media_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
+	                media_types: post.media_types || (post.media_type ? [post.media_type] : []),
+	                is_community_post: true,
+	              }));
               fetchedPosts = [...fetchedPosts, ...formattedCommunityPosts]
                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                 .slice(0, PAGE_SIZE);

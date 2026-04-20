@@ -97,9 +97,10 @@ export function PostCard({
   const { isGuest } = useGuestMode();
 
   // Merge legacy single media into arrays if they exist and arrays are empty
-  const finalMediaUrls = media_urls.length > 0 ? media_urls : (media_url ? [media_url] : []);
-  const finalMediaTypes = media_types.length > 0 ? media_types : (media_type ? [media_type] : []);
-  const hasMedia = finalMediaUrls.length > 0;
+  // We use a fallback to media_url if media_urls is explicitly empty or null
+  const finalMediaUrls = (media_urls && media_urls.length > 0) ? media_urls : (media_url ? [media_url] : []);
+  const finalMediaTypes = (media_types && media_types.length > 0) ? media_types : (media_type ? [media_type] : []);
+  const hasMedia = finalMediaUrls.length > 0 && finalMediaUrls[0] !== null;
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [liked, setLiked] = useState(false);
