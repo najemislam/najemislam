@@ -20,7 +20,7 @@ type Tab = 'posts' | 'saved' | 'about';
 interface Profile {
   id: string;
   full_name: string;
-  username: string;
+  sharable_id: string;
   avatar_url: string;
   cover_url: string;
   bio: string;
@@ -36,6 +36,7 @@ export default function UserProfilePage() {
   const params = useParams();
   const router = useRouter();
   const username = params.username as string;
+  const sharableId = username.toLowerCase(); // Username param is the sharable_id
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
@@ -58,7 +59,7 @@ export default function UserProfilePage() {
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
-        .eq('username', username)
+        .eq('sharable_id', sharableId)
         .single();
 
       if (profileData) {
@@ -73,10 +74,10 @@ export default function UserProfilePage() {
           .from('posts')
           .select(`
             *,
-            user:profiles(full_name, avatar_url, username),
+            user:profiles(full_name, avatar_url, sharable_id),
             original_post:reposted_id(
               *,
-              user:profiles(full_name, avatar_url, username)
+              user:profiles(full_name, avatar_url, sharable_id)
             )
           `)
           .eq('user_id', profileData.id)
@@ -93,10 +94,10 @@ export default function UserProfilePage() {
               .select(`
                 post:posts(
                   *,
-                  user:profiles(full_name, avatar_url, username),
+                  user:profiles(full_name, avatar_url, sharable_id),
                   original_post:reposted_id(
                     *,
-                    user:profiles(full_name, avatar_url, username)
+                    user:profiles(full_name, avatar_url, sharable_id)
                   )
                 )
               `)
@@ -173,7 +174,7 @@ export default function UserProfilePage() {
         if (res.ok) {
           setIsFollowing(false);
           setFollowersCount((prev) => Math.max(0, prev - 1));
-          toast.success(`Unfollowed @${profile.username}`);
+          toast.success(`Unfollowed @${profile.sharable_id}`);
         }
       } else {
         const res = await fetch('/api/follow', {
@@ -188,7 +189,7 @@ export default function UserProfilePage() {
         if (res.ok) {
           setIsFollowing(true);
           setFollowersCount((prev) => prev + 1);
-          toast.success(`Following @${profile.username}`);
+          toast.success(`Following @${profile.sharable_id}`);
         }
       }
     } catch {
@@ -308,9 +309,9 @@ export default function UserProfilePage() {
 
             <div className="mt-16 px-4">
               <div className="flex items-center gap-x-2 gap-y-1 flex-wrap">
-                <h1 className="text-xl font-bold">{profile?.full_name || profile?.username}</h1>
-                <VerifiedBadge username={profile?.username} />
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">@{profile?.username}</p>
+                <h1 className="text-xl font-bold">{profile?.full_name || profile?.sharable_id}</h1>
+                <VerifiedBadge username={profile?.sharable_id} />
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">@{profile?.sharable_id}</p>
               </div>
 
 
@@ -450,8 +451,8 @@ export default function UserProfilePage() {
                     <AtSign size={22} strokeWidth={1.5} />
                   </div>
                     <div className="flex-1">
-                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Username</p>
-                      <p className="font-semibold text-black dark:text-white">@{profile?.username || 'Not set'}</p>
+                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Sharable ID</p>
+                      <p className="font-semibold text-black dark:text-white">@{profile?.sharable_id || 'Not set'}</p>
                     </div>
 
                 </div>
