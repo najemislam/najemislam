@@ -50,7 +50,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
     const timer = setTimeout(async () => {
       setUsernameStatus('checking');
       try {
-        const res = await fetch(`/api/auth/check-username?username=${formData.username}`);
+        const res = await fetch(`/api/auth/check-username?sharable_id=${formData.username}`);
         const data = await res.json();
         setUsernameStatus(data.available ? 'available' : 'taken');
       } catch {
@@ -63,7 +63,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
   const handleNext = () => {
     if (step === 1 && usernameStatus === 'taken') {
-      toast.error('Username is already taken');
+      toast.error('Sharable ID is already taken');
       return;
     }
     setStep(s => s + 1);
@@ -170,12 +170,12 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.1em] ml-1">Username</label>
+                  <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.1em] ml-1">Sharable ID</label>
                   <div className="relative">
                     <CircleUser className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
                     <input
                       type="text"
-                      placeholder="username"
+                      placeholder="@sharable_id"
                       maxLength={15}
                       className={`w-full h-[56px] bg-neutral-100 dark:bg-neutral-900 border rounded-2xl pl-12 pr-12 focus:ring-0 transition-all placeholder:text-neutral-500 dark:placeholder:text-neutral-600 text-foreground ${
                         usernameStatus === 'taken' 
@@ -186,7 +186,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                       }`}
                       value={formData.username}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                        const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
                         setFormData({ ...formData, username: value });
                       }}
                     />
@@ -200,7 +200,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                     <p className={`text-[10px] ml-1 font-medium ${
                       usernameStatus === 'taken' ? 'text-red-500' : 'text-green-500'
                     }`}>
-                      {usernameStatus === 'taken' ? 'Username is already taken' : 'Username is available'}
+                      {usernameStatus === 'taken' ? 'Sharable ID is already taken' : 'Sharable ID is available'}
                     </p>
                   )}
                 </div>
@@ -273,7 +273,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
                 <div className="text-center space-y-1">
                   <h3 className="text-xl font-bold text-foreground">{formData.fullName || 'Your Name'}</h3>
-                  <p className="text-neutral-500">@{formData.username || 'username'}</p>
+                  <p className="text-neutral-500">@{formData.username || 'sharable_id'}</p>
                 </div>
 
                 <div className="w-full grid grid-cols-2 gap-4 mt-4">
