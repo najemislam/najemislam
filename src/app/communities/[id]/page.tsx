@@ -239,143 +239,161 @@ export default function CommunityDetailPage() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      {/* Fixed Header - 64dp */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 bg-background hidden">
-        <h1 className="text-xl font-bold font-[family-name:var(--font-syne)] truncate">{community.name}</h1>
-        {isAdmin && (
-          <button
-            onClick={() => router.push(`/communities/${communityId}/settings`)}
-            className="p-2 text-foreground hover:bg-accent rounded-full transition-colors"
-          >
-            <Settings2 size={24} strokeWidth={1.5} />
-          </button>
+      {/* Cover Photo Area */}
+      <div className="w-full h-56 bg-muted overflow-hidden flex-shrink-0">
+        {community.cover_url ? (
+          <img
+            src={community.cover_url}
+            alt="Community cover"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900" />
         )}
-      </header>
+      </div>
 
-      <main className="max-w-xl mx-auto">
-        {/* Cover Photo */}
-        {community.cover_url && (
-          <div className="w-full h-56 bg-muted overflow-hidden">
-            <img
-              src={community.cover_url}
-              alt="Community cover"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+      {/* Main Content Layout */}
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="flex gap-6">
+          {/* Left Sidebar */}
+          <div className="w-24 flex-shrink-0">
+            {/* Community Avatar */}
+            <div className="mb-6">
+              {community.avatar_url && (
+                <img
+                  src={community.avatar_url}
+                  alt={community.name}
+                  className="w-24 h-24 rounded-full object-cover border-4 border-background"
+                />
+              )}
+            </div>
 
-        {/* Community Info Section */}
-        <div className="px-4 py-6">
-          {/* Profile Picture & Name */}
-          <div className="flex items-start gap-4 mb-4 -mt-14">
-            {community.avatar_url && (
-              <img
-                src={community.avatar_url}
-                alt={community.name}
-                className="w-28 h-28 rounded-full object-cover flex-shrink-0 border-4 border-white dark:border-black"
-              />
+            {/* Create Post Button */}
+            {isMember && currentUser && (
+              <div className="space-y-3">
+                {currentUser.profile?.avatar_url && (
+                  <img
+                    src={currentUser.profile?.avatar_url}
+                    alt={currentUser.user_metadata?.username}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                )}
+                <button
+                  onClick={() => {
+                    const form = document.getElementById('community-post-form') as HTMLFormElement;
+                    form?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full p-2.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center"
+                  title="Create post"
+                >
+                  <Plus size={20} strokeWidth={2} />
+                </button>
+              </div>
             )}
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-foreground">{community.name}</h2>
-              {community.username && (
-                <p className="text-muted-foreground text-sm">@{community.username}</p>
+          </div>
+
+          {/* Right Content */}
+          <div className="flex-1 min-w-0">
+            {/* Community Header Info */}
+            <div className="mb-6">
+              <div className="mb-4">
+                <h1 className="text-3xl font-bold text-foreground">{community.name}</h1>
+                {community.username && (
+                  <p className="text-muted-foreground">@{community.username}</p>
+                )}
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-6 text-sm mb-4">
+                <div>
+                  <div className="font-bold text-foreground">{memberCount}</div>
+                  <div className="text-muted-foreground">{memberCount === 1 ? 'Member' : 'Members'}</div>
+                </div>
+                <div>
+                  <div className="font-bold text-foreground">{postCount}</div>
+                  <div className="text-muted-foreground">{postCount === 1 ? 'Post' : 'Posts'}</div>
+                </div>
+              </div>
+
+              {/* Description */}
+              {community.description && (
+                <p className="text-foreground text-sm leading-relaxed mb-4">
+                  {community.description}
+                </p>
+              )}
+
+              {/* Join Button */}
+              {currentUser && !isAdmin && !isMember && (
+                <button
+                  onClick={handleJoin}
+                  className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
+                >
+                  Join Community
+                </button>
+              )}
+            </div>
+
+            {/* Create Post Form */}
+            {isMember && currentUser && (
+              <div id="community-post-form" className="mb-6 p-4 bg-muted rounded-lg">
+                <form onSubmit={handleCreatePost} className="space-y-3">
+                  <textarea
+                    value={postContent}
+                    onChange={(e) => setPostContent(e.target.value)}
+                    placeholder="What's on your mind?"
+                    rows={3}
+                    className="w-full px-4 py-3 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder-muted-foreground resize-none"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPostContent('')}
+                      className="px-4 py-2 text-muted-foreground hover:bg-accent rounded-lg transition-colors text-sm font-medium"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={postLoading || !postContent.trim()}
+                      className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {postLoading ? 'Posting...' : 'Post'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Posts Section */}
+            <div className="space-y-0">
+              {loading ? (
+                <div className="space-y-4 py-4">
+                  {[...Array(3)].map((_, i) => (
+                    <PostSkeleton key={i} />
+                  ))}
+                </div>
+              ) : posts.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">No posts yet</p>
+              ) : (
+                <>
+                  {posts.map(post => (
+                    <CommunityPostCard
+                      key={post.id}
+                      post={post}
+                      isAdmin={isAdmin}
+                      currentUserId={currentUser?.id}
+                      onLike={handleLike}
+                      onUnlike={handleUnlike}
+                      onApprove={handleApprove}
+                      isLiked={likedPosts.has(post.id)}
+                    />
+                  ))}
+                </>
               )}
             </div>
           </div>
-
-          {/* Stats */}
-          <div className="flex gap-6 mb-4 text-sm">
-            <div>
-              <div className="font-bold text-foreground">{postCount}</div>
-              <div className="text-muted-foreground">{postCount === 1 ? 'Post' : 'Posts'}</div>
-            </div>
-            <div>
-              <div className="font-bold text-foreground flex items-center gap-1">
-                <Users size={16} />
-                {memberCount}
-              </div>
-              <div className="text-muted-foreground">{memberCount === 1 ? 'Member' : 'Members'}</div>
-            </div>
-          </div>
-
-          {/* Description */}
-          {community.description && (
-            <p className="text-foreground text-sm leading-relaxed mb-4">
-              {community.description}
-            </p>
-          )}
-
-          {/* Join Button */}
-          {currentUser && !isAdmin && !isMember && (
-            <button
-              onClick={handleJoin}
-              className="w-full py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
-            >
-              Join Community
-            </button>
-          )}
         </div>
-
-        {/* Create Post Section */}
-        {isMember && currentUser && (
-          <div className="px-4 mb-6">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Create Post</h3>
-            <form onSubmit={handleCreatePost} className="space-y-3">
-              <textarea
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                placeholder="What's on your mind?"
-                rows={3}
-                className="w-full px-4 py-3 bg-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder-muted-foreground resize-none"
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPostContent('')}
-                  className="px-4 py-2 text-muted-foreground hover:bg-accent rounded-lg transition-colors text-sm font-medium"
-                >
-                  Clear
-                </button>
-                <button
-                  type="submit"
-                  disabled={postLoading || !postContent.trim()}
-                  className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {postLoading ? 'Posting...' : 'Post'}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Posts Section */}
-        <div className="px-4">
-          {loading ? (
-            <div className="space-y-4 py-4">
-              {[...Array(3)].map((_, i) => (
-                <PostSkeleton key={i} />
-              ))}
-            </div>
-          ) : posts.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No posts yet</p>
-          ) : (
-            <div className="space-y-0">
-              {posts.map(post => (
-                <CommunityPostCard
-                  key={post.id}
-                  post={post}
-                  isAdmin={isAdmin}
-                  currentUserId={currentUser?.id}
-                  onLike={handleLike}
-                  onUnlike={handleUnlike}
-                  onApprove={handleApprove}
-                  isLiked={likedPosts.has(post.id)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
+      </div>
 
       <BottomNav />
     </div>
