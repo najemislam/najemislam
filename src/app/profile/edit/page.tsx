@@ -342,7 +342,7 @@ export default function EditProfilePage() {
                   <option value="In a relationship">In a relationship</option>
                   <option value="Engaged">Engaged</option>
                   <option value="Married">Married</option>
-                  <option value="In an open relationship">In an open relationship</option>
+                  
                   <option value="It's complicated">It's complicated</option>
                   <option value="Separated">Separated</option>
                   <option value="Divorced">Divorced</option>
