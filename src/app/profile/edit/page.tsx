@@ -7,6 +7,7 @@ import { Loader } from '@/components/ui/loader';
 import { ProfileSkeleton } from '@/components/ProfileSkeleton';
 import { BottomNav } from '@/components/BottomNav';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
+import { IdentityTagSelector } from '@/components/identity-tag-selector';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -22,6 +23,7 @@ interface Profile {
     date_of_birth: string;
     gender: string;
     relationship_status: string;
+    identity_tag: string | null;
   }
 
 export default function EditProfilePage() {
@@ -36,6 +38,7 @@ export default function EditProfilePage() {
   const [dateOfBirth, setDateOfBirth] = useState('');
     const [gender, setGender] = useState('');
     const [relationshipStatus, setRelationshipStatus] = useState('');
+  const [identityTag, setIdentityTag] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -66,6 +69,7 @@ export default function EditProfilePage() {
           setDateOfBirth(profileData.date_of_birth || '');
             setGender(profileData.gender || '');
             setRelationshipStatus(profileData.relationship_status || '');
+            setIdentityTag(profileData.identity_tag || null);
       }
       
       setLoading(false);
@@ -161,6 +165,7 @@ export default function EditProfilePage() {
             date_of_birth: dateOfBirth || null,
             gender: gender,
             relationship_status: relationshipStatus || null,
+            identity_tag: identityTag,
             avatar_url: avatarUrl,
             cover_url: coverUrl,
         })
@@ -303,6 +308,10 @@ export default function EditProfilePage() {
                 className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors resize-none"
                 placeholder="Tell us about yourself"
               />
+            </div>
+
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-xl border border-black/5 dark:border-white/5">
+              <IdentityTagSelector value={identityTag} onChange={setIdentityTag} />
             </div>
 
               <div>

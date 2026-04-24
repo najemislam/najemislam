@@ -21,10 +21,12 @@ type Post = {
   content: string;
   media_url: string | null;
   media_type: string | null;
-  user: { id: string; full_name: string; username: string; avatar_url: string | null };
+  user: { id: string; full_name: string; username: string; avatar_url: string | null; identity_tag?: string | null };
+  user_id?: string;
   community?: { id: string; name: string };
   created_at: string;
   is_community_post?: boolean;
+  isFollower?: boolean;
   [key: string]: unknown;
 };
 
@@ -49,6 +51,7 @@ export default function HomePage() {
   const [isGesturing, setIsGesturing] = useState(false);
   const [feedMode, setFeedMode] = useState<'trending' | 'explore' | 'following' | 'sharable' | 'communities'>('trending');
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
   
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -96,6 +99,16 @@ export default function HomePage() {
           .eq('id', user.id)
           .maybeSingle();
         if (profileData) setProfile(profileData);
+
+        // Fetch user's following list
+        const { data: followsData } = await supabase
+          .from('follows')
+          .select('following_id')
+          .eq('follower_id', user.id);
+        
+        if (followsData) {
+          setFollowingIds(new Set(followsData.map(f => f.following_id)));
+        }
       }
 
       let fetchedPosts: Post[] = [];
@@ -123,7 +136,7 @@ export default function HomePage() {
                 .from('community_posts')
                 .select(`
                   *,
-                  user:profiles!inner(id, full_name, username, avatar_url, is_deactivated),
+                  user:profiles!inner(id, full_name, username, avatar_url, identity_tag, is_deactivated),
                   community:communities(id, name),
                   likes:community_post_likes(count),
                   comments:community_post_comments(count)
@@ -166,12 +179,12 @@ export default function HomePage() {
 	              *,
 	              media_urls,
 	              media_types,
-	              user:profiles!inner(full_name, avatar_url, username, is_deactivated),
+	              user:profiles!inner(full_name, avatar_url, username, identity_tag, is_deactivated),
 	              original_post:reposted_id(
 	                *,
 	                media_urls,
 	                media_types,
-	                user:profiles(full_name, avatar_url, username)
+	                user:profiles(full_name, avatar_url, username, identity_tag)
 	              )
 	            `)
             .eq('user.is_deactivated', false);
@@ -214,7 +227,7 @@ export default function HomePage() {
               .from('community_posts')
               .select(`
                 *,
-                user:profiles!inner(id, full_name, username, avatar_url, is_deactivated),
+                user:profiles!inner(id, full_name, username, avatar_url, identity_tag, is_deactivated),
                 community:communities(id, name),
                 likes:community_post_likes(count),
                 comments:community_post_comments(count)
@@ -800,7 +813,12 @@ export default function HomePage() {
               key={`${post.id}-${index}`} 
               ref={index === posts.length - 1 ? lastPostRef : null}
             >
-              <PostCard {...post} onDelete={handleDeletePost} avatarSize={40} />
+              <PostCard 
+                {...post} 
+                onDelete={handleDeletePost} 
+                avatarSize={40}
+                isFollower={post.user_id ? followingIds.has(post.user_id) : false}
+              />
             </div>
           ))}
         </div>

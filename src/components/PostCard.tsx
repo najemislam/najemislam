@@ -25,6 +25,7 @@ interface PostCardProps {
     full_name: string;
     avatar_url?: string | null;
     username?: string;
+    identity_tag?: string | null;
   };
   content: string;
   media_url?: string | null;
@@ -42,6 +43,7 @@ interface PostCardProps {
   isNested?: boolean;
   community?: { id: string; name: string };
   is_community_post?: boolean;
+  isFollower?: boolean;
 }
 
 interface CommentReply {
@@ -91,7 +93,8 @@ export function PostCard({
   avatarSize = 40,
   isNested = false,
   community,
-  is_community_post
+  is_community_post,
+  isFollower = false
 }: PostCardProps) {
   const router = useRouter();
   const { isGuest } = useGuestMode();
@@ -1506,7 +1509,13 @@ export function PostCard({
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="font-bold text-[16px] tracking-tight truncate">{user?.full_name || user?.username || 'Unknown User'}</span>
                     <VerifiedBadge username={user?.username} className="w-[16px] h-[16px]" />
-                    <span className="text-[14px] text-zinc-500 dark:text-zinc-400 font-medium">@{user?.username || 'user'}</span>
+                    {isFollower && user?.identity_tag ? (
+                      <span className="text-[14px] px-2.5 py-0.5 bg-primary text-primary-foreground rounded-full font-medium">
+                        {user.identity_tag}
+                      </span>
+                    ) : (
+                      <span className="text-[14px] text-zinc-500 dark:text-zinc-400 font-medium">@{user?.username || 'user'}</span>
+                    )}
                   </div>
                 </div>
               </Link>
