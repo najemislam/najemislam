@@ -171,7 +171,7 @@ export default function HomePage() {
           });
 
           if (error) throw error;
-          fetchedPosts = (data || []).map(post => ({
+          fetchedPosts = (data || []).map((post: any) => ({
             ...post,
             media_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
             media_types: post.media_types || (post.media_type ? [post.media_type] : []),
@@ -223,7 +223,7 @@ export default function HomePage() {
           query = query.range(currentOffset, currentOffset + PAGE_SIZE - 1);
           const { data, error } = await query;
           if (error) throw error;
-          fetchedPosts = (data || []).map(post => ({
+          fetchedPosts = (data || []).map((post: any) => ({
             ...post,
             media_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
             media_types: post.media_types || (post.media_type ? [post.media_type] : []),
