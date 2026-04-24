@@ -171,7 +171,11 @@ export default function HomePage() {
           });
 
           if (error) throw error;
-          fetchedPosts = data || [];
+          fetchedPosts = (data || []).map(post => ({
+            ...post,
+            media_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
+            media_types: post.media_types || (post.media_type ? [post.media_type] : []),
+          }));
         } else {
           let query = supabase
             .from('posts')
@@ -219,7 +223,11 @@ export default function HomePage() {
           query = query.range(currentOffset, currentOffset + PAGE_SIZE - 1);
           const { data, error } = await query;
           if (error) throw error;
-          fetchedPosts = data || [];
+          fetchedPosts = (data || []).map(post => ({
+            ...post,
+            media_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
+            media_types: post.media_types || (post.media_type ? [post.media_type] : []),
+          }));
 
           // Also fetch community posts for explore and following modes
           if (mode === 'explore' || mode === 'following') {
