@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { PostCard } from '@/components/PostCard';
 import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { BottomNav } from '@/components/BottomNav';
-import { Calendar, User, UserPen, Menu, X, Settings, LogOut, Share2, Globe, Lock, Eye, EyeOff, UserCircle, AtSign, Cake, Mars, Venus, Heart } from 'lucide-react';
+import { Calendar, User, UserPen, Menu, X, Settings, LogOut, Share2, Globe, Lock, Eye, EyeOff, UserCircle, AtSign, Cake, Mars, Venus, Heart, CircleUser } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import { ProfileSkeleton } from '@/components/ProfileSkeleton';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
@@ -302,15 +302,19 @@ export default function ProfilePage() {
           </div>
 
             <div className="absolute -bottom-14 left-4">
-              <div className="w-28 h-28 rounded-full border-4 border-white dark:border-black overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                <img
-                  src={avatarSrc}
-                  alt={profile?.full_name || 'User'}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=default`;
-                  }}
-                />
+              <div className="w-28 h-28 rounded-full border-4 border-white dark:border-black overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center">
+                {avatarSrc && avatarSrc !== '' ? (
+                  <img
+                    src={avatarSrc}
+                    alt={profile?.full_name || 'User'}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <CircleUser className="w-16 h-16 text-zinc-400 dark:text-zinc-600" strokeWidth={1} />
+                )}
               </div>
             </div>
 
