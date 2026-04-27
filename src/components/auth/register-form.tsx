@@ -11,13 +11,13 @@ import {
   ArrowRight,
   ArrowLeft,
   Lock,
-  UserCircle2,
   Eye,
   EyeOff,
   XCircle,
   User,
   Briefcase,
-  AlignLeft,
+  Building2,
+  AtSign,
 } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -253,7 +253,10 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.1em] ml-1">Full Name</label>
                 <div className="relative">
-                  <UserCircle2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
+                  {isBrand
+                    ? <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
+                    : <CircleUser className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
+                  }
                   <input
                     type="text"
                     placeholder="Full Name"
@@ -269,7 +272,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.1em] ml-1">Sharable ID</label>
                 <div className="relative">
-                  <CircleUser className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
+                  <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
                   <input
                     type="text"
                     placeholder="@sharable_id"
@@ -340,21 +343,6 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                     </div>
                   </div>
 
-                  {/* Bio */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.1em] ml-1">Bio <span className="text-neutral-400 normal-case font-normal">(optional)</span></label>
-                    <div className="relative">
-                      <AlignLeft className="absolute left-4 top-4 w-5 h-5 text-neutral-500 pointer-events-none" />
-                      <textarea
-                        placeholder="Tell something about yourself…"
-                        maxLength={160}
-                        rows={3}
-                        className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl pl-12 pr-4 py-3.5 focus:border-foreground/20 focus:ring-0 transition-all placeholder:text-neutral-500 dark:placeholder:text-neutral-600 text-foreground resize-none"
-                        value={formData.bio}
-                        onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                      />
-                    </div>
-                  </div>
                 </>
               )}
 
@@ -396,21 +384,6 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.1em] ml-1">Description <span className="text-neutral-400 normal-case font-normal">(optional)</span></label>
-                    <div className="relative">
-                      <AlignLeft className="absolute left-4 top-4 w-5 h-5 text-neutral-500 pointer-events-none" />
-                      <textarea
-                        placeholder="Describe your brand…"
-                        maxLength={160}
-                        rows={3}
-                        className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl pl-12 pr-4 py-3.5 focus:border-foreground/20 focus:ring-0 transition-all placeholder:text-neutral-500 dark:placeholder:text-neutral-600 text-foreground resize-none"
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      />
-                    </div>
-                  </div>
                 </>
               )}
 
