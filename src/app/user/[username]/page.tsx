@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { PostCard } from '@/components/PostCard';
 import { VerifiedBadge } from '@/components/VerifiedBadge';
 import { BottomNav } from '@/components/BottomNav';
-import { Calendar, User, MessageCircle, ArrowLeft, UserCircle, AtSign, Cake, Mars, Venus, Heart, CircleUser } from 'lucide-react';
+import { Calendar, User, MessageCircle, ArrowLeft, UserCircle, AtSign, Cake, Mars, Venus, Heart, CircleUser, Briefcase, Building2 } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import { ProfileSkeleton } from '@/components/ProfileSkeleton';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
@@ -23,13 +23,19 @@ interface Profile {
   username: string;
   avatar_url: string;
   cover_url: string;
-  bio: string;
-  date_of_birth: string;
-    gender: string;
-    saved_visibility?: 'public' | 'private';
-    relationship_status?: string;
-    created_at?: string;
-  }
+  account_type?: string;
+  // Personal fields
+  bio?: string;
+  date_of_birth?: string;
+  gender?: string;
+  relationship_status?: string;
+  // Brand fields
+  description?: string;
+  since?: string;
+  org_type?: string;
+  saved_visibility?: 'public' | 'private';
+  created_at?: string;
+}
 
 export default function UserProfilePage() {
   const isHeaderVisible = useScrollDirection();
@@ -58,7 +64,7 @@ export default function UserProfilePage() {
 
       const { data: profileData } = await supabase
       .from('profiles')
-      .select('id, full_name, username, avatar_url, cover_url, bio, date_of_birth, gender, saved_visibility, relationship_status, created_at')
+      .select('id, full_name, username, avatar_url, cover_url, account_type, bio, description, date_of_birth, gender, since, org_type, saved_visibility, relationship_status, created_at')
       .eq('username', sharableId)
         .single();
 
@@ -425,40 +431,47 @@ export default function UserProfilePage() {
           )
           ) : (
             <div className="px-4 py-4 space-y-4">
-              {/* Bio Box */}
+              {/* Bio / Description Box */}
               <div className="bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl p-4 border border-black/5 dark:border-white/5">
                 <div className="flex items-center gap-3 text-zinc-500 dark:text-zinc-400 mb-3">
-                  <span className="text-xs font-bold uppercase tracking-widest">Bio</span>
+                  <span className="text-xs font-bold uppercase tracking-widest">
+                    {profile?.account_type === 'brand' ? 'Description' : 'Bio'}
+                  </span>
                 </div>
                 <p className="text-black dark:text-white leading-relaxed text-[15px]">
-                  {profile?.bio ? <MentionText text={profile.bio} /> : 'No bio yet.'}
+                  {profile?.account_type === 'brand'
+                    ? (profile?.description ? <MentionText text={profile.description} /> : 'No description yet.')
+                    : (profile?.bio ? <MentionText text={profile.bio} /> : 'No bio yet.')
+                  }
                 </p>
               </div>
 
               {/* Details Box */}
               <div className="bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl p-4 border border-black/5 dark:border-white/5 space-y-6">
+                {/* Full Name — always shown */}
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                     <UserCircle size={22} strokeWidth={1.5} />
                   </div>
-                    <div className="flex-1">
-                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Full Name</p>
-                      <p className="font-semibold text-black dark:text-white">{profile?.full_name || 'Not set'}</p>
-                    </div>
-
+                  <div className="flex-1">
+                    <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Full Name</p>
+                    <p className="font-semibold text-black dark:text-white">{profile?.full_name || 'Not set'}</p>
+                  </div>
                 </div>
 
+                {/* Username — always shown */}
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                     <AtSign size={22} strokeWidth={1.5} />
                   </div>
-                    <div className="flex-1">
-                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Username</p>
-                      <p className="font-semibold text-black dark:text-white">@{profile?.username || 'Not set'}</p>
-                    </div>
-
+                  <div className="flex-1">
+                    <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Username</p>
+                    <p className="font-semibold text-black dark:text-white">@{profile?.username || 'Not set'}</p>
+                  </div>
                 </div>
 
+                {/* PERSONAL: Date of Birth */}
+                {profile?.account_type !== 'brand' && (
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                       <Cake size={22} strokeWidth={1.5} />
@@ -468,7 +481,10 @@ export default function UserProfilePage() {
                       <p className="font-semibold text-black dark:text-white">{formatDate(profile?.date_of_birth || '')}</p>
                     </div>
                   </div>
+                )}
 
+                {/* PERSONAL: Gender */}
+                {profile?.account_type !== 'brand' && (
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                       {profile?.gender?.toLowerCase() === 'male' ? (
@@ -484,7 +500,10 @@ export default function UserProfilePage() {
                       <p className="font-semibold text-black dark:text-white capitalize">{profile?.gender || 'Not set'}</p>
                     </div>
                   </div>
+                )}
 
+                {/* PERSONAL: Relationship Status */}
+                {profile?.account_type !== 'brand' && (
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                       <Heart size={22} strokeWidth={1.5} />
@@ -494,17 +513,49 @@ export default function UserProfilePage() {
                       <p className="font-semibold text-black dark:text-white">{profile?.relationship_status || 'Not set'}</p>
                     </div>
                   </div>
+                )}
 
+                {/* BRAND: Since */}
+                {profile?.account_type === 'brand' && (
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                       <Calendar size={22} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Active From</p>
-                      <p className="font-semibold text-black dark:text-white">{formatDate(profile?.created_at || '')}</p>
+                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Since</p>
+                      <p className="font-semibold text-black dark:text-white">{profile?.since || 'Not set'}</p>
                     </div>
                   </div>
+                )}
+
+                {/* BRAND: Type (Solo / Organization) */}
+                {profile?.account_type === 'brand' && (
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                      {profile?.org_type === 'Organization' ? (
+                        <Building2 size={22} strokeWidth={1.5} />
+                      ) : (
+                        <Briefcase size={22} strokeWidth={1.5} />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Type</p>
+                      <p className="font-semibold text-black dark:text-white">{profile?.org_type || 'Not set'}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Active From — always shown */}
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                    <Calendar size={22} strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Active From</p>
+                    <p className="font-semibold text-black dark:text-white">{formatDate(profile?.created_at || '')}</p>
+                  </div>
                 </div>
+              </div>
             </div>
           )}
       </div>

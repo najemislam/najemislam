@@ -14,17 +14,23 @@ import { toast } from 'sonner';
 import imageCompression from 'browser-image-compression';
 
 interface Profile {
-    id: string;
-    full_name: string;
-    username: string;
-    bio: string;
-    avatar_url: string;
-    cover_url: string;
-    date_of_birth: string;
-    gender: string;
-    relationship_status: string;
-    identity_tag: string | null;
-  }
+  id: string;
+  full_name: string;
+  username: string;
+  avatar_url: string;
+  cover_url: string;
+  account_type?: string;
+  // Personal fields
+  bio?: string;
+  date_of_birth?: string;
+  gender?: string;
+  relationship_status?: string;
+  // Brand fields
+  description?: string;
+  since?: string;
+  org_type?: string;
+  identity_tag: string | null;
+}
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -33,10 +39,15 @@ export default function EditProfilePage() {
   const [saving, setSaving] = useState(false);
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
+  // Personal fields
   const [bio, setBio] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
-    const [gender, setGender] = useState('');
-    const [relationshipStatus, setRelationshipStatus] = useState('');
+  const [gender, setGender] = useState('');
+  const [relationshipStatus, setRelationshipStatus] = useState('');
+  // Brand fields
+  const [description, setDescription] = useState('');
+  const [since, setSince] = useState('');
+  const [orgType, setOrgType] = useState('');
   const [identityTag, setIdentityTag] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -67,11 +78,16 @@ export default function EditProfilePage() {
         setProfile(profileData);
         setFullName(profileData.full_name || '');
         setUsername(profileData.username || '');
+        // Personal
         setBio(profileData.bio || '');
-          setDateOfBirth(profileData.date_of_birth || '');
-            setGender(profileData.gender || '');
-            setRelationshipStatus(profileData.relationship_status || '');
-            setIdentityTag(profileData.identity_tag || null);
+        setDateOfBirth(profileData.date_of_birth || '');
+        setGender(profileData.gender || '');
+        setRelationshipStatus(profileData.relationship_status || '');
+        // Brand
+        setDescription(profileData.description || '');
+        setSince(profileData.since || '');
+        setOrgType(profileData.org_type || '');
+        setIdentityTag(profileData.identity_tag || null);
       }
       
       setLoading(false);
@@ -179,17 +195,27 @@ export default function EditProfilePage() {
         coverUrl = path;
       }
 
+      const isBrand = profile.account_type === 'brand';
       const { error } = await supabase
         .from('profiles')
         .update({
           full_name: fullName.trim(),
+          identity_tag: identityTag,
+          avatar_url: avatarUrl,
+          cover_url: coverUrl,
+          // Personal fields
+          ...(isBrand ? {} : {
             bio: bio.trim(),
             date_of_birth: dateOfBirth || null,
             gender: gender,
             relationship_status: relationshipStatus || null,
-            identity_tag: identityTag,
-            avatar_url: avatarUrl,
-            cover_url: coverUrl,
+          }),
+          // Brand fields
+          ...(isBrand ? {
+            description: description.trim(),
+            since: since || null,
+            org_type: orgType || null,
+          } : {}),
         })
         .eq('id', profile.id);
 
@@ -331,21 +357,41 @@ export default function EditProfilePage() {
               <p className="text-xs text-zinc-400 dark:text-zinc-600 mt-1">Username cannot be changed</p>
             </div>
 
-            {/* Description (Bio) */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2 flex justify-between">
-                <span>Description</span>
-                <span className={`${bio.length >= 115 ? 'text-red-500' : 'text-zinc-400'} text-xs`}>{bio.length}/115</span>
-              </label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                maxLength={115}
-                rows={3}
-                className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors resize-none"
-                placeholder="Tell us about yourself"
-              />
-            </div>
+            {/* PERSONAL: Bio */}
+            {profile?.account_type !== 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2 flex justify-between">
+                  <span>Bio</span>
+                  <span className={`${bio.length >= 115 ? 'text-red-500' : 'text-zinc-400'} text-xs`}>{bio.length}/115</span>
+                </label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  maxLength={115}
+                  rows={3}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors resize-none"
+                  placeholder="Tell us about yourself"
+                />
+              </div>
+            )}
+
+            {/* BRAND: Description */}
+            {profile?.account_type === 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2 flex justify-between">
+                  <span>Description</span>
+                  <span className={`${description.length >= 115 ? 'text-red-500' : 'text-zinc-400'} text-xs`}>{description.length}/115</span>
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  maxLength={115}
+                  rows={3}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors resize-none"
+                  placeholder="Describe your brand"
+                />
+              </div>
+            )}
 
             {/* Highlight Yourself */}
             <div>
@@ -355,47 +401,85 @@ export default function EditProfilePage() {
               </div>
             </div>
 
-            {/* Date of Birth */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Date of Birth</label>
-              <input
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
-              />
-            </div>
+            {/* PERSONAL: Date of Birth */}
+            {profile?.account_type !== 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Date of Birth</label>
+                <input
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                />
+              </div>
+            )}
 
-            {/* Gender */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Gender</label>
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
+            {/* PERSONAL: Gender */}
+            {profile?.account_type !== 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Gender</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            )}
 
-            {/* Relationship Status */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Relationship Status</label>
-              <select
-                value={relationshipStatus}
-                onChange={(e) => setRelationshipStatus(e.target.value)}
-                className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
-              >
-                <option value="Single">Single</option>
-                <option value="In a relationship">In a relationship</option>
-                <option value="Engaged">Engaged</option>
-                <option value="Married">Married</option>
-                <option value="It's complicated">It's complicated</option>
-                <option value="Separated">Separated</option>
-                <option value="Divorced">Divorced</option>
-              </select>
-            </div>
+            {/* PERSONAL: Relationship Status */}
+            {profile?.account_type !== 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Relationship Status</label>
+                <select
+                  value={relationshipStatus}
+                  onChange={(e) => setRelationshipStatus(e.target.value)}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                >
+                  <option value="Single">Single</option>
+                  <option value="In a relationship">In a relationship</option>
+                  <option value="Engaged">Engaged</option>
+                  <option value="Married">Married</option>
+                  <option value="It's complicated">It's complicated</option>
+                  <option value="Separated">Separated</option>
+                  <option value="Divorced">Divorced</option>
+                </select>
+              </div>
+            )}
+
+            {/* BRAND: Since */}
+            {profile?.account_type === 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Since</label>
+                <input
+                  type="number"
+                  value={since}
+                  onChange={(e) => setSince(e.target.value)}
+                  min={1900}
+                  max={new Date().getFullYear()}
+                  placeholder={`e.g. ${new Date().getFullYear()}`}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                />
+              </div>
+            )}
+
+            {/* BRAND: Type */}
+            {profile?.account_type === 'brand' && (
+              <div>
+                <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Type</label>
+                <select
+                  value={orgType}
+                  onChange={(e) => setOrgType(e.target.value)}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                >
+                  <option value="">Select type</option>
+                  <option value="Solo">Solo</option>
+                  <option value="Organization">Organization</option>
+                </select>
+              </div>
+            )}
           </div>
         </main>
 
