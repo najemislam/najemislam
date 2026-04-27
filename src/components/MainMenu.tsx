@@ -148,7 +148,7 @@ export function MainMenu({ open, onClose, avatarSrc, feedMode, onFeedModeChange 
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Alerts</p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{alertsEnabled ? 'Notifications on' : 'Notifications off'}</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Push alerts</p>
                   </div>
                   <button
                     onClick={() => setAlertsEnabled(prev => !prev)}
@@ -164,7 +164,7 @@ export function MainMenu({ open, onClose, avatarSrc, feedMode, onFeedModeChange 
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Dark Mode</p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{theme === 'dark' ? 'Dark theme active' : 'Dark theme deactivate'}</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Use dark theme</p>
                   </div>
                   <button
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
