@@ -515,7 +515,7 @@ export default function ProfilePage() {
                         </div>
                         <div className="flex-1">
                           <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">Since</p>
-                          <p className="font-semibold text-black dark:text-white">{profile?.since || 'Not set'}</p>
+                          <p className="font-semibold text-black dark:text-white">{profile?.since ? formatDate(profile.since) : 'Not set'}</p>
                         </div>
                       </div>
                     )}

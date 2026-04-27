@@ -454,12 +454,9 @@ export default function EditProfilePage() {
               <div>
                 <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Since</label>
                 <input
-                  type="number"
+                  type="date"
                   value={since}
                   onChange={(e) => setSince(e.target.value)}
-                  min={1900}
-                  max={new Date().getFullYear()}
-                  placeholder={`e.g. ${new Date().getFullYear()}`}
                   className="w-full bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
                 />
               </div>

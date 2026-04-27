@@ -367,11 +367,8 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
                     <div className="relative">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 pointer-events-none" />
                       <input
-                        type="number"
-                        placeholder={`e.g. ${new Date().getFullYear()}`}
-                        min={1900}
-                        max={new Date().getFullYear()}
-                        className="w-full h-[56px] bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl pl-12 pr-4 focus:border-foreground/20 focus:ring-0 transition-all placeholder:text-neutral-500 dark:placeholder:text-neutral-600 text-foreground"
+                        type="date"
+                        className="w-full h-[56px] bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl pl-12 pr-4 focus:border-foreground/20 focus:ring-0 transition-all text-foreground [color-scheme:light] dark:[color-scheme:dark]"
                         value={formData.since}
                         onChange={(e) => setFormData({ ...formData, since: e.target.value })}
                       />

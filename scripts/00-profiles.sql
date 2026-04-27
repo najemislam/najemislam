@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   password_hash TEXT NOT NULL,
   date_of_birth DATE,                    -- Personal account date of birth
   gender TEXT,                           -- Personal account gender (Male/Female)
-  since TEXT,                            -- Brand account founding year
+  since DATE,                            -- Brand account founding date
   org_type TEXT,                         -- Brand account type: 'Solo' or 'Organization'
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
