@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, ArrowLeft, Send, MoreVertical, Trash2, UserPlus, Home, Settings2, RotateCcw } from 'lucide-react';
+import { MessageCircle, ArrowLeft, Send, MoreVertical, Trash2, UserPlus, Settings2, RotateCcw } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import { ConversationSkeleton, MessageSkeleton } from '@/components/MessageSkeleton';
 import { BottomNav } from '@/components/BottomNav';
@@ -66,7 +66,7 @@ export default function MessagesPage() {
   const [followedUsers, setFollowedUsers] = useState<Set<string>>(new Set());
   const [showMenu, setShowMenu] = useState(false);
   const [messagedUsers, setMessagedUsers] = useState<Set<string>>(new Set());
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [visibleTimestamp, setVisibleTimestamp] = useState<string | null>(null);
   const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
   const [swipeStartX, setSwipeStartX] = useState(0);
@@ -348,18 +348,13 @@ export default function MessagesPage() {
           <>
             {/* Header for Chat List - 64px (approx 64dp) */}
                 <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 bg-background">
-                    <h1 className="text-xl font-bold font-[family-name:var(--font-syne)]">Chats</h1>
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setShowFilters(!showFilters)}
-                        className="p-2 text-foreground hover:bg-accent rounded-full transition-colors"
-                      >
-                        <Settings2 size={24} strokeWidth={1.5} />
-                      </button>
-                      <Link href="/home" className="p-2 text-foreground hover:bg-accent rounded-full transition-colors">
-                        <Home size={24} strokeWidth={1.5} />
-                      </Link>
-                    </div>
+                    <h1 className="text-xl font-bold font-[family-name:var(--font-syne)]">Message</h1>
+                    <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="p-2 text-foreground hover:bg-accent rounded-full transition-colors"
+                    >
+                      <Settings2 size={24} strokeWidth={1.5} />
+                    </button>
                 </header>
 
                 {/* Filter Pills - Below header, toggleable */}
