@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 import { verifyToken } from '@/lib/auth-utils';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
-export async function POST(request: NextRequest) {
+export async function POST (request: NextRequest) {
   const cookieHeader = request.headers.get('cookie') || '';
   const cookies = Object.fromEntries(
     cookieHeader.split('; ').map(c => {

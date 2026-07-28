@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
+export async function GET (req: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
   try {
     const { postId } = await params;
     const { searchParams } = new URL(req.url);
@@ -31,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
+export async function POST (req: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
   try {
     const { postId } = await params;
     const { user_id, content } = await req.json();

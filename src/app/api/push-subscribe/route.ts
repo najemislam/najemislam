@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 import { verifyToken } from '@/lib/auth-utils';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 async function getAuthUserId(req: NextRequest): Promise<string | null> {
   const token = req.cookies.get('sb-auth-token')?.value;
@@ -15,7 +11,7 @@ async function getAuthUserId(req: NextRequest): Promise<string | null> {
 }
 
 // Save a push subscription for the authenticated user
-export async function POST(req: NextRequest) {
+export async function POST (req: NextRequest) {
   try {
     const userId = await getAuthUserId(req);
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -48,7 +44,7 @@ export async function POST(req: NextRequest) {
 }
 
 // Remove a push subscription
-export async function DELETE(req: NextRequest) {
+export async function DELETE (req: NextRequest) {
   try {
     const userId = await getAuthUserId(req);
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

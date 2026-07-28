@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 import { verifyToken } from '@/lib/auth-utils';
 
 export const maxDuration = 60;
 
 export const runtime = 'nodejs';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
-export async function POST(request: NextRequest) {
+export async function POST (request: NextRequest) {
   const cookieHeader = request.headers.get('cookie') || '';
   const cookies = Object.fromEntries(
     cookieHeader.split('; ').map(c => {
@@ -38,7 +34,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 });
   }
 
-  const fileExt = file.name.split('.').pop();
+  const fileExt = file.name.includes('.') ? file.name.split('.').pop() : '';
   const fileName = `${payload.userId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
   const arrayBuffer = await file.arrayBuffer();

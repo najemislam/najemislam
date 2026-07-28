@@ -1,14 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 import { NextResponse } from 'next/server';
 import { hashPassword, createToken } from '@/lib/auth-utils';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
-export async function POST(request: Request) {
+export async function POST (request: Request) {
   try {
     const { username, password, fullName, dob, gender, avatarUrl, bio } = await request.json();
     
@@ -61,8 +56,8 @@ export async function POST(request: Request) {
 
       const userId = authData.user.id;
 
-      const { error: profileError } = await supabaseAdmin.from('profiles').insert({
-        id: userId,
+      const { data: newProfile, error: profileError } = await supabaseAdmin.from('profiles').insert({
+        user_id: userId,
         full_name: fullName,
         username: username.toLowerCase(),
         account_type: 'personal',
@@ -72,21 +67,21 @@ export async function POST(request: Request) {
         bio: bio || null,
         avatar_url: avatarUrl || '',
         password_hash: hashedPassword
-      });
+      }).select().single();
 
-      if (profileError) {
+      if (profileError || !newProfile) {
         await supabaseAdmin.auth.admin.deleteUser(userId);
-        return NextResponse.json({ error: profileError.message }, { status: 500 });
+        return NextResponse.json({ error: profileError?.message || 'Failed to create profile' }, { status: 500 });
       }
 
     const token = await createToken({
-      userId: userId,
+      userId: newProfile.id,
       username: username.toLowerCase() // Using 'username' key for backward compatibility in token
     });
 
     const response = NextResponse.json({ 
       success: true, 
-      userId: userId,
+      userId: newProfile.id,
       message: 'Account created successfully'
     });
 

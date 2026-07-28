@@ -1,12 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 import { NextResponse } from 'next/server';
 import { comparePassword, createToken } from '@/lib/auth-utils';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
 // Offline-capable fallback for the dev account.
 // Only used when Supabase is unreachable.
@@ -17,7 +12,7 @@ const DEV_FALLBACK: Record<string, { id: string; password_hash: string }> = {
   },
 };
 
-export async function POST(request: Request) {
+export async function POST (request: Request) {
   try {
     const { username, password } = await request.json();
 

@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin, getSupabasePublic } from '@/lib/supabase/server-client';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // Minimal Web Push payload sender using the Web Push Protocol (RFC 8030)
 // We do NOT rely on web-push npm package to keep zero extra deps.
@@ -55,7 +51,7 @@ async function buildVapidAuthHeader(endpoint: string, vapidPublicKey: string, va
   return `vapid t=${jwt}, k=${vapidPublicKey}`;
 }
 
-export async function POST(req: NextRequest) {
+export async function POST (req: NextRequest) {
   try {
     const { user_id, title, body, url } = await req.json();
 
